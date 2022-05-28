@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -28,11 +22,5 @@ for t in tagList:
 df = pd.DataFrame.from_dict(tagDict)
 
 #remove default index column
+#Save data as CSV files
 df.to_csv('booksScraper.csv', index = False )
-
-
-# In[ ]:
-
-
-
-
