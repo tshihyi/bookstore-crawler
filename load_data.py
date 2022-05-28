@@ -37,14 +37,8 @@ def mongoConnect(username, password, ip):
     username = quote_plus(username)
     password = quote_plus(password)
     client = pymongo.MongoClient(ip)
-    
-def dataCount(db):
-    result = db.collection.aggregate([
-        {"$count": "title" }
-    ])
-    return list(result)
 
-
+#Connect to Mongo DB
 mongoConnect(username,password, "mongodb+srv://username:password@cluster0.fkroy.mongodb.net/sample_analytics?retryWrites=true&w=majority")
 mydb = client.marketing
 mycollection = mydb.bookstore_best_selling #tablename
@@ -55,11 +49,11 @@ if total_count > 1:
     mycollection.drop()
     print("Delete ", total_count, "rows success!")
     data_dict = get_best_selling_list()
-    collection.insert_many(data_dict.apply(lambda x: x.to_dict(), axis=1).to_list())
+    mycollection.insert_many(data_dict.apply(lambda x: x.to_dict(), axis=1).to_list())
     apply_count = mycollection.count_documents({})
     print("Insert ", apply_count, " rows success!")
 else: #Data Initial
     data_dict = get_best_selling_list()
-    collection.insert_many(data_dict.apply(lambda x: x.to_dict(), axis=1).to_list())
+    mycollection.insert_many(data_dict.apply(lambda x: x.to_dict(), axis=1).to_list())
     apply_count = mycollection.count_documents({})
     print("Insert ", apply_count, " rows success!")
