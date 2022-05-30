@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+from datetime import date
 
 # get Best selling from book store
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36'}
@@ -16,7 +17,8 @@ tagDict = {'title': [], 'author': [], 'price': []}
 for t in tagList:
     tagDict['title'].append(t.select('a')[0].text) 
     tagDict['author'].append(t.select('a')[1].text)
-    tagDict['price'].append(t.find('b').text)
+    tagDict['price'].append(t.select('.price_a b:last-child')[-1].text)
+    tagDict['date'].append(date.today().isoformat())
      
 # table column
 df = pd.DataFrame.from_dict(tagDict)
