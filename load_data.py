@@ -37,10 +37,19 @@ def mongoConnect(username, password, ip):
     username = quote_plus(username)
     password = quote_plus(password)
     client = pymongo.MongoClient(ip)
+    return client
 
-#Connect to Mongo DB
-mongoConnect(username,password, "mongodb+srv://username:password@cluster0.fkroy.mongodb.net/sample_analytics?retryWrites=true&w=majority")
-mydb = client.marketing
+def insertData():
+    data_dict = get_best_selling_list()
+    mycollection.insert_many(data_dict.apply(lambda x: x.to_dict(), axis=1).to_list())
+    apply_count = mycollection.count_documents({})
+    print("Insert ", apply_count, " rows success!")
+
+mongoDBId = mongoDBId
+mongoDBPwd = mongoDBPwd
+connStr = "mongodb+srv://" + mongoDBId + ":" + mongoDBPwd + "@cluster0.fkroy.mongodb.net/sample_analytics?retryWrites=true&w=majority"
+
+mydb = mongoConnect(mongoDBId, mongoDBPwd, connStr).marketing
 mycollection = mydb.bookstore_best_selling #tablename
 total_count = mycollection.count_documents({})
 
@@ -48,12 +57,7 @@ total_count = mycollection.count_documents({})
 if total_count > 1:
     mycollection.drop()
     print("Delete ", total_count, "rows success!")
-    data_dict = get_best_selling_list()
-    mycollection.insert_many(data_dict.apply(lambda x: x.to_dict(), axis=1).to_list())
-    apply_count = mycollection.count_documents({})
-    print("Insert ", apply_count, " rows success!")
+    insertData()
 else: #Data Initial
-    data_dict = get_best_selling_list()
-    mycollection.insert_many(data_dict.apply(lambda x: x.to_dict(), axis=1).to_list())
-    apply_count = mycollection.count_documents({})
-    print("Insert ", apply_count, " rows success!")
+    insertData()
+    
